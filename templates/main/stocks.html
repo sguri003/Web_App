@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stocks – Django Web App</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        h1, h2 { color: #333; }
+        a { color: #0066cc; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        table { border-collapse: collapse; width: 100%; background: #fff; margin-bottom: 30px; }
+        th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: right; }
+        th { background: #333; color: #fff; text-align: center; }
+        td:first-child, th:first-child { text-align: left; }
+        tr:nth-child(even) { background: #f9f9f9; }
+
+        .positive { color: green; }
+        .negative { color: red; }
+
+        .ticker-nav { margin-bottom: 20px; }
+        .ticker-nav a { margin-right: 10px; padding: 4px 10px; border: 1px solid #ccc;
+                        border-radius: 4px; background: #fff; }
+        .ticker-nav a.active { background: #333; color: #fff; border-color: #333; }
+    </style>
+</head>
+<body>
+    <p><a href="/">&larr; Home</a></p>
+    <h1>Stock &amp; Market Data</h1>
+
+    <h2>Latest Prices</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Ticker</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Open</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Close</th>
+                <th>Change</th>
+                <th>Change %</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in latest %}
+            <tr>
+                <td><a href="?ticker={{ s.ticker }}">{{ s.ticker }}</a></td>
+                <td>{{ s.label }}</td>
+                <td>{{ s.date }}</td>
+                <td>{{ s.open|default:"—" }}</td>
+                <td>{{ s.high|default:"—" }}</td>
+                <td>{{ s.low|default:"—" }}</td>
+                <td>{{ s.close|default:"—" }}</td>
+                <td class="{% if s.change and s.change >= 0 %}positive{% elif s.change %}negative{% endif %}">
+                    {% if s.change %}{{ s.change }}{% else %}—{% endif %}
+                </td>
+                <td class="{% if s.change_pct and s.change_pct >= 0 %}positive{% elif s.change_pct %}negative{% endif %}">
+                    {% if s.change_pct %}{{ s.change_pct }}%{% else %}—{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>History – {{ selected_label }} ({{ selected_ticker }})</h2>
+    <div class="ticker-nav">
+        {% for t, label in tickers %}
+        <a href="?ticker={{ t }}" class="{% if t == selected_ticker %}active{% endif %}">{{ t }}</a>
+        {% endfor %}
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Open</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Close</th>
+                <th>Volume</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in history %}
+            <tr>
+                <td>{{ row.date }}</td>
+                <td>{{ row.open|default:"—" }}</td>
+                <td>{{ row.high|default:"—" }}</td>
+                <td>{{ row.low|default:"—" }}</td>
+                <td>{{ row.close|default:"—" }}</td>
+                <td>{{ row.volume|default:"—" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
