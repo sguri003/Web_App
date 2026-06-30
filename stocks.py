@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 CSV_PATH = BASE_DIR / "stock_data.csv"
-
+#tucjers list
 TICKERS = ["NDX", "GSPC", "DJI", "GC_F", "CL_F", "BZ_F", "SI_F", "CVX", "XEL", "HG_F"]
 
 TICKER_LABELS = {
